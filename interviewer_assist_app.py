@@ -6,8 +6,7 @@ import pdfplumber
 import docx
 from io import StringIO
 
-st.set_page_config(page_title="­ЪДа Interviewer Assist", layout="wide")
-st.title("­ЪДа Interviewer Assistant")
+st.set_page_config(page_title="Interviewer Assistant", layout="wide")
 
 client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
