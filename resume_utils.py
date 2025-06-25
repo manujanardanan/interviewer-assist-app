@@ -16,14 +16,27 @@ def extract_text_from_docx(f):
         return ""
 
 def extract_relevant_experience(text):
-    lines=[l.strip() for l in text.splitlines() if l.strip()]
-    start_sec=["experience","work history","projects","employment","roles","professional experience"]
-    end_sec=["education","certifications","skills","summary","objective","profile"]
-    start=re.compile(r'^\s*('+"|".join(start_sec)+')\s*$',re.I)
-    end=re.compile(r'^\s*('+"|".join(end_sec)+')\s*$',re.I)
-    capture=False; block=[]
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    start_sec = [
+        "experience", "work history", "projects",
+        "employment", "roles", "professional experience"
+    ]
+    end_sec = [
+        "education", "certifications", "skills",
+        "summary", "objective", "profile"
+    ]
+    start_re = re.compile(r"^\s*(" + "|".join(start_sec) + ")\s*$", re.I)
+    end_re = re.compile(r"^\s*(" + "|".join(end_sec) + ")\s*$", re.I)
+
+    capturing = False
+    buf = []
     for l in lines:
-        if start.match(l): capture=True; block=[]; continue
-        if end.match(l) and capture: break
-        if capture: block.append(l)
-    return "\n".join(block) if block else text
+        if start_re.match(l):
+            capturing = True
+            buf = []
+            continue
+        if capturing and end_re.match(l):
+            break
+        if capturing:
+            buf.append(l)
+    return "\n".join(buf) if buf else text
