@@ -1,4 +1,3 @@
-
 import streamlit as st
 import openai
 from resume_utils import extract_text_from_pdf, extract_text_from_docx, extract_relevant_experience
@@ -12,11 +11,19 @@ client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def generate_questions(jd, resume_exp):
     prompt = (
-        "Generate exactly 8 interview questions based on the Job Description and Resume Experience below.\n"
-        "- 4 questions to verify the truth of the candidate's resume claims.\n"
-        "- 4 questions to assess whether the candidate has the knowledge and skills required by the JD.\n"
-        "For each question, add a short bullet labelled 'Listen for:' that tells the interviewer what cues to listen for.\n"
-        "Return output in Markdown with two sections: 'Truth‑Check Questions' and 'Fit‑Check Questions'.\n\n"
+        "You are an expert interviewer assistant.\n"
+        "Generate exactly 10 interview questions based on the Job Description and Resume Experience below:\n"
+        "- 4 questions to verify the truthfulness of the resume (Truth‑Check)\n"
+        "- 4 questions to assess fit to the JD (Fit‑Check)\n"
+        "- 2 scenario-based questions derived from the JD only (Scenario‑Based)\n"
+        "Each question should be followed by a short bullet point that starts with 'Listen for:' — this tells the interviewer what kind of answer or evidence is expected.\n\n"
+        "Return the response in Markdown with three sections:\n"
+        "### Truth‑Check Questions\n"
+        "* Q1 …\n  - Listen for: …\n"
+        "### Fit‑Check Questions\n"
+        "* Q2 …\n  - Listen for: …\n"
+        "### Scenario‑Based Questions\n"
+        "* Q9 …\n  - Listen for: …\n\n"
         f"Job Description:\n{jd}\n\nResume Experience:\n{resume_exp}"
     )
     resp = client.chat.completions.create(
