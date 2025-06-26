@@ -1,3 +1,4 @@
+
 import streamlit as st
 import openai
 from resume_utils import extract_text_from_pdf, extract_text_from_docx, extract_relevant_experience
@@ -11,24 +12,17 @@ client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def generate_questions(jd, resume_exp):
     prompt = (
-        "You are an expert technical interviewer assistant.\n"
-        "Your job is to help verify candidates based on their resume and the job description.\n\n"
-        "→ Step 1: Read the Resume Experience and the Job Description.\n"
-        "→ Step 2: Find skills or experiences from the resume that are relevant to the JD.\n"
-        "→ Step 3: For those matching areas, generate 4 questions that help verify if the candidate truly has the skills they claim (Truth‑Check).\n"
-        "→ Step 4: Generate 4 Fit‑Check questions — these evaluate if the candidate has what it takes to perform the role described in the JD.\n"
-        "→ Step 5: Generate 2 Scenario‑Based questions inspired by the JD responsibilities (not from the resume).\n"
-        "→ Each question should include a '- Listen for:' note with a clear signal or cue to evaluate.\n\n"
-        "Return only markdown. Format it as:\n"
-        "### Truth‑Check Questions\n* Q1 …\n  - Listen for: …\n"
-        "### Fit‑Check Questions\n* Q5 …\n  - Listen for: …\n"
-        "### Scenario‑Based Questions\n* Q9 …\n  - Listen for: …\n\n"
+        "Generate exactly 8 interview questions based on the Job Description and Resume Experience below.\n"
+        "- 4 questions to verify the truth of the candidate's resume claims.\n"
+        "- 4 questions to assess whether the candidate has the knowledge and skills required by the JD.\n"
+        "For each question, add a short bullet labelled 'Listen for:' that tells the interviewer what cues to listen for.\n"
+        "Return output in Markdown with two sections: 'Truth‑Check Questions' and 'Fit‑Check Questions'.\n\n"
         f"Job Description:\n{jd}\n\nResume Experience:\n{resume_exp}"
     )
     resp = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.4
+        temperature=0.5
     )
     return resp.choices[0].message.content
 
