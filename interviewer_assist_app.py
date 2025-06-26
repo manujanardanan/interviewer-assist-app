@@ -11,25 +11,24 @@ client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def generate_questions(jd, resume_exp):
     prompt = (
-        "You are an expert interviewer assistant.\n"
-        "Generate exactly 10 interview questions based on the Job Description and Resume Experience below:\n"
-        "- 4 questions to verify the truthfulness of the resume (Truth‑Check)\n"
-        "- 4 questions to assess fit to the JD (Fit‑Check)\n"
-        "- 2 scenario-based questions derived from the JD only (Scenario‑Based)\n"
-        "Each question should be followed by a short bullet point that starts with 'Listen for:' — this tells the interviewer what kind of answer or evidence is expected.\n\n"
-        "Return the response in Markdown with three sections:\n"
-        "### Truth‑Check Questions\n"
-        "* Q1 …\n  - Listen for: …\n"
-        "### Fit‑Check Questions\n"
-        "* Q2 …\n  - Listen for: …\n"
-        "### Scenario‑Based Questions\n"
-        "* Q9 …\n  - Listen for: …\n\n"
+        "You are an expert technical interviewer assistant.\n"
+        "Your job is to help verify candidates based on their resume and the job description.\n\n"
+        "→ Step 1: Read the Resume Experience and the Job Description.\n"
+        "→ Step 2: Find skills or experiences from the resume that are relevant to the JD.\n"
+        "→ Step 3: For those matching areas, generate 4 questions that help verify if the candidate truly has the skills they claim (Truth‑Check).\n"
+        "→ Step 4: Generate 4 Fit‑Check questions — these evaluate if the candidate has what it takes to perform the role described in the JD.\n"
+        "→ Step 5: Generate 2 Scenario‑Based questions inspired by the JD responsibilities (not from the resume).\n"
+        "→ Each question should include a '- Listen for:' note with a clear signal or cue to evaluate.\n\n"
+        "Return only markdown. Format it as:\n"
+        "### Truth‑Check Questions\n* Q1 …\n  - Listen for: …\n"
+        "### Fit‑Check Questions\n* Q5 …\n  - Listen for: …\n"
+        "### Scenario‑Based Questions\n* Q9 …\n  - Listen for: …\n\n"
         f"Job Description:\n{jd}\n\nResume Experience:\n{resume_exp}"
     )
     resp = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.5
+        temperature=0.4
     )
     return resp.choices[0].message.content
 
